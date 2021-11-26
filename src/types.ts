@@ -150,6 +150,8 @@ export interface PanOnlyOptions {
    * **Note**: the containment pan adjustment is not affected by the `disablePan` option.
    */
   contain?: 'inside' | 'outside'
+  /** Limit the allowed mac pan of the elemement to a fraction to the elements size */
+  maxPanRatio?: number
   /** The cursor style to set on the panzoom element */
   cursor?: string
   /**

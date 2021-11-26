@@ -9,6 +9,13 @@
  */
 import './polyfills'
 
+import { getDimensions, setStyle, setTransform, setTransition } from './css'
+import { destroyPointer, eventNames, onPointer } from './events'
+import isAttached from './isAttached'
+import isExcluded from './isExcluded'
+import isSVGElement from './isSVGElement'
+import { addPointer, getDistance, getMiddle, removePointer } from './pointers'
+import shallowClone from './shallowClone'
 import {
   PanOptions,
   PanzoomEvent,
@@ -17,14 +24,6 @@ import {
   PanzoomOptions,
   ZoomOptions
 } from './types'
-import { addPointer, getDistance, getMiddle, removePointer } from './pointers'
-import { destroyPointer, eventNames, onPointer } from './events'
-import { getDimensions, setStyle, setTransform, setTransition } from './css'
-
-import isAttached from './isAttached'
-import isExcluded from './isExcluded'
-import isSVGElement from './isSVGElement'
-import shallowClone from './shallowClone'
 
 const defaultOptions: PanzoomOptions = {
   animate: false,
@@ -203,6 +202,7 @@ function Panzoom(
     panOptions?: PanOptions
   ) {
     const opts = { ...options, ...panOptions }
+
     const result = { x, y, opts }
     if (!opts.force && (opts.disablePan || (opts.panOnlyWhenZoomed && scale === opts.startScale))) {
       return result
@@ -218,7 +218,7 @@ function Panzoom(
       result.y = (opts.relative ? y : 0) + toY
     }
 
-    if (opts.contain) {
+    if (opts.contain || opts.maxPanRatio) {
       const dims = getDimensions(elem)
       const realWidth = dims.elem.width / scale
       const realHeight = dims.elem.height / scale
@@ -268,6 +268,35 @@ function Panzoom(
             diffVertical) /
           toScale
         const maxY = (diffVertical - dims.parent.padding.top) / toScale
+        result.y = Math.max(Math.min(result.y, maxY), minY)
+      } else if (opts.maxPanRatio) {
+        const minX =
+          (-dims.elem.margin.left - dims.parent.padding.left + diffHorizontal) / toScale -
+          scaledWidth * opts.maxPanRatio
+        const maxX =
+          (dims.parent.width -
+            scaledWidth -
+            dims.parent.padding.left -
+            dims.elem.margin.left -
+            dims.parent.border.left -
+            dims.parent.border.right +
+            diffHorizontal) /
+            toScale +
+          scaledWidth * opts.maxPanRatio
+        result.x = Math.max(Math.min(result.x, maxX), minX)
+        const minY =
+          (-dims.elem.margin.top - dims.parent.padding.top + diffVertical) / toScale -
+          scaledHeight * opts.maxPanRatio
+        const maxY =
+          (dims.parent.height -
+            scaledHeight -
+            dims.parent.padding.top -
+            dims.elem.margin.top -
+            dims.parent.border.top -
+            dims.parent.border.bottom +
+            diffVertical) /
+            toScale +
+          scaledHeight * opts.maxPanRatio
         result.y = Math.max(Math.min(result.y, maxY), minY)
       }
     }

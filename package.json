@@ -39,11 +39,11 @@
     "dragging",
     "drag"
   ],
-  "repository": "timmywil/panzoom",
+  "repository": "aleib/panzoom",
   "license": "MIT",
   "author": {
-    "name": "Timmy Willison",
-    "email": "4timmywil@gmail.com"
+    "name": "Alex",
+    "email": "aleib.start@gmail.com"
   },
   "devDependencies": {
     "@babel/core": "^7.15.0",

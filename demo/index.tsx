@@ -1,17 +1,19 @@
 import './demo.css'
 import './global-panzoom'
 
+import React from 'react'
+import ReactDOM from 'react-dom'
+
 import ContainInside from './examples/ContainInside'
 import ContainOutside from './examples/ContainOutside'
 import DisabledYAxis from './examples/DisabledYAxis'
 import Exclude from './examples/Exclude'
 import Focal from './examples/Focal'
-import React from 'react'
-import ReactDOM from 'react-dom'
-import SVG from './examples/SVG'
-import Standard from './examples/Standard'
-import Rotate from './examples/Rotate'
+import MaxPanRatio from './examples/MaxPanRatio'
 import PanzoomWithinPanzoom from './examples/PanzoomWithinPanzoom'
+import Rotate from './examples/Rotate'
+import Standard from './examples/Standard'
+import SVG from './examples/SVG'
 
 function Demos() {
   return (
@@ -27,6 +29,7 @@ function Demos() {
           </svg>
         </a>
       </h1>
+      <MaxPanRatio />
       <Standard />
       <Focal />
       <SVG />
