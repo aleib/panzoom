@@ -270,33 +270,47 @@ function Panzoom(
         const maxY = (diffVertical - dims.parent.padding.top) / toScale
         result.y = Math.max(Math.min(result.y, maxY), minY)
       } else if (opts.maxPanRatio) {
+        const { elem, parent } = dims
+        const panHeight = elem.height < parent.height ? elem.height : parent.height
+        const panWidth = elem.width < parent.width ? elem.width : parent.width
+
         const minX =
-          (-dims.elem.margin.left - dims.parent.padding.left + diffHorizontal) / toScale -
-          scaledWidth * opts.maxPanRatio
+          (diffHorizontal -
+            dims.elem.margin.left -
+            dims.parent.padding.left -
+            scaledWidth +
+            panWidth * (1 - opts.maxPanRatio)) /
+          toScale
+
         const maxX =
           (dims.parent.width -
-            scaledWidth -
             dims.parent.padding.left -
             dims.elem.margin.left -
             dims.parent.border.left -
             dims.parent.border.right +
-            diffHorizontal) /
-            toScale +
-          scaledWidth * opts.maxPanRatio
+            diffHorizontal +
+            -panWidth * (1 - opts.maxPanRatio)) /
+          toScale
+
         result.x = Math.max(Math.min(result.x, maxX), minX)
+
         const minY =
-          (-dims.elem.margin.top - dims.parent.padding.top + diffVertical) / toScale -
-          scaledHeight * opts.maxPanRatio
+          (diffVertical -
+            dims.elem.margin.top -
+            dims.parent.padding.top -
+            scaledHeight +
+            panHeight * (1 - opts.maxPanRatio)) /
+          toScale
+
         const maxY =
           (dims.parent.height -
-            scaledHeight -
             dims.parent.padding.top -
-            dims.elem.margin.top -
             dims.parent.border.top -
-            dims.parent.border.bottom +
-            diffVertical) /
-            toScale +
-          scaledHeight * opts.maxPanRatio
+            dims.parent.border.bottom -
+            dims.elem.margin.top +
+            diffVertical -
+            panHeight * (1 - opts.maxPanRatio)) /
+          toScale
         result.y = Math.max(Math.min(result.y, maxY), minY)
       }
     }
